@@ -7,7 +7,8 @@ export default function Home() {
   const [users, setUsers] = useState([]);
   useEffect(() => {}, [users]);
   const userIdToDelete = useRef();
-  const buttonClicked = async () => {
+
+  const createPost = async () => {
     try {
       const res = await axiosInstance.get("api/query/post");
       console.log(res);
@@ -15,7 +16,8 @@ export default function Home() {
       console.log(error);
     }
   };
-  const deleteButtonClicked = async () => {
+
+  const deleteFirstUser = async () => {
     try {
       const res = await axiosInstance.delete("api/query/deletefirst");
       console.log(res);
@@ -23,6 +25,7 @@ export default function Home() {
       console.log(error);
     }
   };
+
   const deleteUserById = async () => {
     try {
       const userObject = {
@@ -37,6 +40,7 @@ export default function Home() {
       console.log(error);
     }
   };
+
   const readUsers = async () => {
     try {
       const res = await axiosInstance.get("api/query/readusers/");
@@ -52,8 +56,8 @@ export default function Home() {
   };
   return (
     <div>
-      <button onClick={buttonClicked}>send query</button>
-      <button onClick={deleteButtonClicked}>delete first one query</button>
+      <button onClick={createPost}>send query</button>
+      <button onClick={deleteFirstUser}>delete first one query</button>
       <button onClick={readUsers}>readUsers</button>
       <button onClick={deleteUserById}>delete user id:</button>
       <input
