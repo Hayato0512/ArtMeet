@@ -62,6 +62,19 @@ router.get("/readuserbyemail/:email", async (req, res) => {
     }
   );
 });
+router.get("/readuserbyid/:id", async (req, res) => {
+  console.log("read users byid query called");
+  connection.query(
+    `SELECT * FROM user WHERE id = ${req.params.id}`,
+    (error, res2) => {
+      if (error) throw error;
+      else {
+        console.log(res2);
+        res.send(res2);
+      }
+    }
+  );
+});
 
 router.put("/update", async (req, res) => {
   console.log("update query called");
@@ -81,6 +94,39 @@ router.get("/readpostsbyid/:id", async (req, res) => {
   console.log(`hey the parameter is ${req.params.id}`);
   connection.query(
     `SELECT * FROM post WHERE artistid = ${req.params.id}`,
+    (error, res2) => {
+      try {
+        if (error) throw error;
+        else {
+          res.send(res2);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  );
+});
+
+router.post("/follows/:userid/:useridtofollow", async (req, res) => {
+  console.log(`follows called`);
+  connection.query(
+    `INSERT INTO follows (userId, followeduserid) VALUES ('${req.params.userid}','${req.params.useridtofollow}')`,
+    (error, res2) => {
+      try {
+        if (error) throw error;
+        else {
+          res.send(res2);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  );
+});
+router.get("/readfollowings/:userid", async (req, res) => {
+  console.log(`followings called`);
+  connection.query(
+    `SELECT followeduserid FROM follows WHERE userId = ${req.params.userid}`,
     (error, res2) => {
       try {
         if (error) throw error;
