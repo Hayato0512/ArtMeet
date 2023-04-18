@@ -86,38 +86,38 @@ export default function Home() {
     }
   };
 
-  return <Login />;
+  return (
+    <div>
+      <button onClick={createPost}>send query</button>
+      <button onClick={updateUser}>update user</button>
+      <button onClick={deleteFirstUser}>delete first one query</button>
+      <button onClick={readUsers}>readUsers</button>
+      <button onClick={deleteUserById}>delete user id:</button>
+      <input
+        placeholder="Username"
+        required
+        ref={userIdToDelete}
+        className="loginInput"
+      />
+      Hey Home
+      <div>
+        {users.map((user) => (
+          <div>
+            <p>{user.id}</p>
+            <p>{user.name}</p>
+            <p>{user.email}</p>
+            <p>{user.password}</p>
+            <p>{user.isArtist}</p>
+          </div>
+        ))}
+      </div>
+      <input
+        placeholder="artistId"
+        required
+        ref={artistIdToShowPost}
+        className="loginInput"
+      />
+      <button onClick={showPosts}>update user</button>
+    </div>
+  );
 }
-
-// <div>
-//   <button onClick={createPost}>send query</button>
-//   <button onClick={updateUser}>update user</button>
-//   <button onClick={deleteFirstUser}>delete first one query</button>
-//   <button onClick={readUsers}>readUsers</button>
-//   <button onClick={deleteUserById}>delete user id:</button>
-//   <input
-//     placeholder="Username"
-//     required
-//     ref={userIdToDelete}
-//     className="loginInput"
-//   />
-//   Hey Home
-//   <div>
-//     {users.map((user) => (
-//       <div>
-//         <p>{user.id}</p>
-//         <p>{user.name}</p>
-//         <p>{user.email}</p>
-//         <p>{user.password}</p>
-//         <p>{user.isArtist}</p>
-//       </div>
-//     ))}
-//   </div>
-//   <input
-//     placeholder="artistId"
-//     required
-//     ref={artistIdToShowPost}
-//     className="loginInput"
-//   />
-//   <button onClick={showPosts}>update user</button>
-// </div>

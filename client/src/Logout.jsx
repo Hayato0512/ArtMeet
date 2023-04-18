@@ -7,30 +7,34 @@ import { useState } from "react";
 
 export default function Logout() {
   const user = useSelector(selectUser);
-  const [userId, setUserId] = useState(0);
+  const [userId, setUserId] = useState(null);
   const dispatch = useDispatch();
   const [userIdToFollow, setUserIdToFollow] = useState(0);
   const [followings, setFollowings] = useState([]);
 
-  useEffect(() => {
-    console.log(`followings changed now, it's ${followings}`);
-  }, [followings]);
+  //   useEffect(() => {
+  //     console.log(`followings changed now, it's ${JSON.stringify(followings)}`);
+  //   }, [followings]);
 
   useEffect(() => {
+    console.log(
+      `useEffect for user is called because user is ${JSON.stringify(user)}`
+    );
     const fetchUser = async () => {
       try {
         const res = await axiosInstance.get(
           `api/query/readuserbyemail/${user.email}`
         );
-        console.log(`hey it's logout page, res.data ${res.data[0].isArtist}`);
+        console.log(`hey it's logout page, res.data ${res.data[0]}`);
         setUserId(res.data[0].id);
       } catch (error) {}
     };
     fetchUser();
   }, [user]);
   useEffect(() => {
+    console.log(`useEffect for userId is called because userId is ${userId}`);
     fetchFollowings();
-  }, []);
+  }, [userId]);
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -47,38 +51,60 @@ export default function Logout() {
       const res = await axiosInstance.post(
         `api/query/follows/${userId}/${userIdToFollow}`
       );
-      console.log(res.data);
     } catch (error) {
       console.log(error);
     }
   };
 
   const fetchFollowings = async () => {
-    var arrayOfFollowings = [];
-    try {
-      const res = await axiosInstance.get(`api/query/readfollowings/${userId}`);
+    if (userId) {
+      try {
+        var arrayOfFollowings = [];
+        const res = await axiosInstance.get(
+          `api/query/readfollowings/${userId}`
+        );
+        function containsObject(obj, list) {
+          var i;
+          for (i = 0; i < list.length; i++) {
+            console.log(
+              `containsObject obj ${JSON.stringify(
+                obj
+              )}, list[i] ${JSON.stringify(list[i])}`
+            );
+            if (list[i].id === obj.id) {
+              console.log(`containsObjectTRUETRUETRUE`);
+              return true;
+            }
+          }
 
-      res.data.forEach(async (element) => {
-        console.log(`for each, element ${element.followeduserid}`);
-        //pass the userID and get user
-        try {
-          const res = await axiosInstance.get(
-            `api/query/readuserbyid/${element.followeduserid}`
-          );
-          console.log(`heyheyhey ${JSON.stringify(res.data)}`);
-          arrayOfFollowings.push(res.data);
-          console.log(
-            `after pushing, arrayOFFollowing is ${arrayOfFollowings}`
-          );
-        } catch (error) {}
-      });
-      console.log(
-        `Before setFollowings, arrayOFFollowing is ${arrayOfFollowings}`
-      );
-      setFollowings(arrayOfFollowings);
-      //setFollowings
-      // setFollowings(res)
-    } catch (error) {}
+          return false;
+        }
+        res.data.forEach(async (element) => {
+          console.log(`for each, element ${element.followeduserid}`);
+          try {
+            const res = await axiosInstance.get(
+              `api/query/readuserbyid/${element.followeduserid}`
+            );
+            console.log(`heyheyhey ${JSON.stringify(res.data[0])}`);
+            if (containsObject(res.data[0], followings)) {
+              console.log(
+                `${res.data[0].name} already exist, so don't update the list`
+              );
+            } else {
+              setFollowings((current) => [...current, res.data[0]]);
+            }
+            console.log(
+              `after pushing, arrayOFFollowing is ${JSON.stringify(
+                arrayOfFollowings
+              )}`
+            );
+            console.log(
+              `after setFollowing, state is ${JSON.stringify(followings)}`
+            );
+          } catch (error) {}
+        });
+      } catch (error) {}
+    }
   };
 
   return (
@@ -100,9 +126,11 @@ export default function Logout() {
           onChange={(e) => setUserIdToFollow(e.target.value)}
         />
         <div>
-          {followings.map((user) => (
-            <h3>{user.name}</h3>
-          ))}
+          {user
+            ? followings.map((user) => (
+                <h3 key={user.id}>{user ? user.name : "hey"}</h3>
+              ))
+            : ""}
         </div>
         <button type="submit" className="submitButton">
           submit

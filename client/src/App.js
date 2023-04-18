@@ -9,6 +9,7 @@ import Logout from "./Logout";
 function App() {
   const user = useSelector(selectUser);
   return <div className="App">{user ? <Logout /> : <Login />}</div>;
+  // return <div className="App">{<Home />}</div>;
 }
 
 export default App;
